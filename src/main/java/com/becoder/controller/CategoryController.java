@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
-import com.becoder.entity.Category;
+import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.serviceee.CategoryService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
@@ -40,6 +43,9 @@ public class CategoryController {
 
 	@GetMapping("/")
 	public ResponseEntity<?> getAllCategory() {
+//		String name=null;
+//		name.toUpperCase();
+		
 		List<CategoryDto> allCategory = categoryService.getAllCategory();
 		if (CollectionUtils.isEmpty(allCategory)) {
 			return ResponseEntity.noContent().build();
@@ -59,13 +65,13 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id){
+	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception{
+			
 		CategoryDto categoryDto =categoryService.getCategoryById(id);
 		if(ObjectUtils.isEmpty(categoryDto)) {
-			return new ResponseEntity<>("category not found with id="+id,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Internal server error",HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(categoryDto,HttpStatus.OK);
-
 	}
 	
 	@DeleteMapping("/{id}")
