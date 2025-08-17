@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import com.becoder.dto.CategoryDto;
+import com.becoder.exception.ValidationException;
 
 @Component
 public class Validation {
@@ -42,12 +43,12 @@ public class Validation {
 //					throw new IllegalArgumentException("name field is empty or null");
 			error.put("IsActive", "IsActive field is empty or null");
 		} else {
-			if (categoryDto.getIsActive() == Boolean.TRUE || !categoryDto.getIsActive() == Boolean.FALSE) {
+			if (categoryDto.getIsActive() != Boolean.TRUE.booleanValue() && categoryDto.getIsActive() != Boolean.FALSE.booleanValue()) {
 				error.put("IsActive", "invalid value isActive field");
 			}
 		}
 		if (!error.isEmpty()) {
-			throw new IllegalArgumentException(error);
+			throw new ValidationException(error);
 		}
 	}
 }

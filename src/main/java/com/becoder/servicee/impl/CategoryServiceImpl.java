@@ -15,6 +15,7 @@ import com.becoder.entity.Category;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
 import com.becoder.serviceee.CategoryService;
+import com.becoder.util.Validation;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -22,10 +23,16 @@ public class CategoryServiceImpl implements CategoryService {
 	private CategoryRepository categoryRepository;
 
 	@Autowired
+	private Validation validation;
+	
+	@Autowired
 	private ModelMapper mapper;
 
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
+		
+		validation.categoryValidation(categoryDto);
+		
 		Category category = mapper.map(categoryDto, Category.class);
 
 		category.setIsDeleted(false);
