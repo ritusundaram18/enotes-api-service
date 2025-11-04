@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
-		
+		// Validation Checking
 		validation.categoryValidation(categoryDto);
 		
 		//check category exist or not
@@ -48,15 +48,12 @@ public class CategoryServiceImpl implements CategoryService {
 		{
 		category.setIsDeleted(false);
 //		category.setCreatedBy(1);
-//		category.setCreatedOn(new Date());
+		category.setCreatedOn(new Date());
 		}
 		else {
 			updateCategory(category);
 			
 		}
-
-		
-
 		Category saveCategory = categoryRepository.save(category);
 		if (ObjectUtils.isEmpty(saveCategory)) {
 			return false;
@@ -75,7 +72,6 @@ public class CategoryServiceImpl implements CategoryService {
 //			category.setUpdatedBy(1);
 //			category.setUpdateOn(new Date());
 			
-
 		}
 	}
 
