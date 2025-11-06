@@ -74,15 +74,25 @@ public class CategoryServiceImpl implements CategoryService {
 			
 		}
 	}
-
+	
 	@Override
 	public List<CategoryDto> getAllCategory() {
-		List<Category> categories = categoryRepository.findByIsDeletedFalse();
+		List<Category> categories = categoryRepository.findAll();
 
-		List<CategoryDto> categoryDtoList = categories.stream().map(cat -> mapper.map(cat, CategoryDto.class)).toList();
+		List<CategoryDto> categoryDtoList = categories.stream().
+				map(cat -> mapper.map(cat, CategoryDto.class)).toList();
 
 		return categoryDtoList;
 	}
+
+//	@Override
+//	public List<CategoryDto> getAllCategory() {
+////		List<Category> categories = categoryRepository.findByIsDeletedFalse();
+//		List<Category> categories = categoryRepository.findAll();
+//		List<CategoryDto> categoryDtoList = categories.stream().map(cat -> mapper.map(cat, CategoryDto.class)).toList();
+//
+//		return categoryDtoList;
+//	}
 
 	@Override
 	public List<CategoryResponse> getActiveCategory() {
