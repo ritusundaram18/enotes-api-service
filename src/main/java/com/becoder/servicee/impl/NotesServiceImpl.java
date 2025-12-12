@@ -3,8 +3,8 @@ package com.becoder.servicee.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-//import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +14,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.data.util.StreamUtils;
-import org.springframework.util.StreamUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+//import org.springframework.data.util.StreamUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesDto.CategoryDto;
+import com.becoder.dto.NotesResponse;
 import com.becoder.entity.FileDetails;
 import com.becoder.entity.Notes;
 import com.becoder.exception.ResourceNotFoundException;
@@ -30,9 +32,7 @@ import com.becoder.repository.FileRepository;
 import com.becoder.repository.NotesRepository;
 import com.becoder.serviceee.NotesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
-//import java.nio.file.Files;
-import com.becoder.entity.FileDetails;
+import org.springframework.data.domain.*;
 
 @Service
 public class NotesServiceImpl implements NotesService {
@@ -162,6 +162,24 @@ public class NotesServiceImpl implements NotesService {
 		FileDetails fileDtls = fileRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("File is not available"));
 		return fileDtls;
+	}
+
+	@Override
+	public NotesResponse getAllNotesByUser(Integer userId, Integer pageNo, Integer pageSize) {
+		//
+		Pageable pageable=PageRequest.of(pageNo, pageSize);
+		Page<Notes> pageNotes=notesRepository.findByCreatedBy(userId,pageable);
+		
+		List<NotesDto> notesDto=pageNotes.get().map(n->mapper.map(n,NotesDto.class)).toList();
+		NotesResponse notes=NotesResponse.builder()
+				.notes(notesDto)
+				.pageNo(pageNotes.getNumber())
+				.pageSize(pageNotes.getSize()).totalElements(pageNotes.getTotalElements())
+				.totalPages(pageNotes.getTotalPages()).isFirst(pageNotes.isFirst()).isLast(pageNotes.isLast()).build();
+
+		return notes;
+		
+//		return null;
 	}
 
 }
